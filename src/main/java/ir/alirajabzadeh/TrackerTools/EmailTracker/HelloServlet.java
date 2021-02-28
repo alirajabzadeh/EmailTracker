@@ -6,20 +6,29 @@ import javax.servlet.annotation.*;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
-    private String message;
 
-    public void init() {
-        message = "Hello World!";
+    private static void writeResponse(BufferedWriter outputStream, BufferedInputStream inputStream) throws IOException {
+        int binary;
+        while ((binary = inputStream.read()) != -1)
+            outputStream.write(binary);
+        outputStream.flush();
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
 
-        // Hello
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + message + "</h1>");
-        out.println("</body></html>");
+        //load your picture , 1x1 transparent picture
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(
+                new File("index.png")
+        ));
+
+        //set output stream to write the binary of picture on that ( response )
+        BufferedWriter out = new BufferedWriter(
+                response.getWriter()
+        );
+
+        //writing process ...
+        writeResponse(out, in);
+
     }
 
     public void destroy() {
